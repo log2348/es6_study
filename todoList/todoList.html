@@ -16,35 +16,145 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <title>MyTodoList</title>
+
 </head>
 <body>
     <div class="container">
-        <h2>Todo-List</h2>
+        <h2>My Todo List</h2>
+        <br>
             <div class="form-group">
-              <label>날짜</label>
-              <div>
-                  <input class="datepicker" placeholder="날짜를 검색하세요.">
+                <div>
+                    <label><b>날짜</b></label>
+                    <br>
+                    <input class="datepicker" placeholder="날짜를 입력하세요." id="date">
+                </div>
+                <br>
+                <div>
+                    <label><b>내용</b></label>
+                    <div class="row">
+                        &nbsp;&nbsp;&nbsp;<input type="text" class="form-control col-sm-8" id="pwd" placeholder="내용을 입력하세요.">&nbsp;&nbsp;
+                        <button type="button" class="btn btn-danger">추가</button>
+                    </div>
+                </div>
+            </div>
 
+            <br>
+
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox" class="check_all_list" id="agree1" onclick="allCheck(event)"></th>
+                    <th>날짜</th>
+                    <th>내용</th>
+                    <th></th>
+                    <th></th>
+                    
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="checkbox" class="check_all_list" id="agree1" onclick="checkAllList(event)"></td>
+                    <td>Doe</td>
+                    <td>john@example.com</td>
+                    <td><button type="button" class="btn btn-danger">삭제</button></td>
+                    <td><button type="button" class="btn btn-primary">수정</button></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" class="check_all_list" id="agree1" onclick="checkAllList(event)"></td>
+                    <td>Moe</td>
+                    <td>mary@example.com</td>
+                    <td><button type="button" class="btn btn-danger">삭제</button></td>
+                    <td><button type="button" class="btn btn-primary">수정</button></td>
+                  </tr>
+                </tbody>
+              </table>
               </div>
-            </div>
-            <div class="form-group">
-              <label for="pwd">Password:</label>
-              <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd">
-            </div>
-            <div class="form-group form-check">
-              <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="remember"> Remember me
-              </label>
-            </div>
-            <button type="submit" class="btn btn-primary">검색</button>
+
+              <div class="container">
+                  <button type="button" class="btn btn-danger">선택 삭제</button>
+                  <button type="button" class="btn btn-primary">일괄 수정</button>
+              </div>
+
+              <a href="#pop_info_1" class="btn btn-primary">팝업 열기</a>
+
+              <!-- 팝업 -->
+              <div id="pop_info_1" class="pop_wrap" style="display:none;">
+                <div class="pop_inner">
+                  <p class="dsc">팝업 안내문구 입니다.</p>
+                  <button type="button" class="btn_close">닫기</button>
+                </div>
+              </div>
+            
     </div>
 </body>
 </html>
 
 <script>
-    $(function(){
+    // Datepicker는 국내와 표기 순서가 다르기 때문에 한국어로 변환하는 과정이 필요하다.
+    $.datepicker.setDefaults({
+        dateFormat: 'yy-mm-dd',
+        prevText: '이전 달',
+        nextText: '다음 달',
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+        showMonthAfterYear: true,
+        yearSuffix: '년'
+    });
+
+    $(function () {
         $('.datepicker').datepicker();
-    })
+    });
+
+    // TODO 지난 날짜는 선택하지 못하도록
+
+    // CheckBox
+    function allCheck(e) { // 전체 체크 버튼 클릭시 전체 체크 및 해제
+	if(e.target.checked) {
+		document.querySelectorAll(".check_all_list").forEach(function(v, i) {
+			v.checked = true;
+		});
+	} else {
+		document.querySelectorAll(".check_all_list").forEach(function(v, i) {
+			v.checked = false;
+		});
+	}
+    }
+    
+    function checkAllList(e) { // 체크 버튼 클릭시 전체 체크 버튼 체크 및 해제
+        let checkCount = 0;
+        document.querySelectorAll(".check_all_list").forEach(function(v, i) {
+            if(v.checked === false){
+                checkCount++;
+            }
+        });
+        if(checkCount>0) {
+            document.getElementById("allCheck").checked = false;
+        } else if(checkCount === 0) {
+            document.getElementById("allCheck").checked = true;
+        }
+    }
+
+    let target = document.querySelectorAll('.btn_open');
+    let targetID;
+
+    // 팝업 열기
+    for(let i = 0; i < target.length; i++){
+        target[i].addEventListener('click', function(){
+        targetID = this.getAttribute('href');
+        document.querySelector(targetID).style.display = 'block';
+        });
+    }
+    
+    // 팝업 닫기
+    for(let j = 0; j < target.length; j++){
+        btnPopClose[j].addEventListener('click', function(){
+        this.parentNode.parentNode.style.display = 'none';
+        });
+    }
+
 </script>
 <script src="todoList.js"></script>
 
