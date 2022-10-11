@@ -42,12 +42,10 @@
     showMonthAfterYear: true,
     yearSuffix: "년",
     minDate: 0,
-    maxDate: 30 
   });
 
   $(function () {
     $(".datepicker").datepicker();
-    // TODO 지난 날짜는 선택하지 못하도록
   });
 
   // CheckBox
@@ -88,7 +86,7 @@
     layer_popup($href);
   });
 
-  function layer_popup(el) {
+  layer_popup = (el) => {
     
     var $el = $(el); //레이어의 id를 $el 변수에 저장
     var isDim = $el.prev().hasClass("dimBg"); //dimmed 레이어를 감지하기 위한 boolean 변수
@@ -110,7 +108,7 @@
       $el.css({ top: 0, left: 0 });
     }
 
-    $el.find("a.btn-layerClose").click(function () {
+    $("#btn_close").click(function () {
       isDim ? $(".dim-layer").fadeOut() : $el.fadeOut(); // 닫기 버튼을 클릭하면 레이어가 닫힌다.
       return false;
     });
@@ -126,8 +124,6 @@
    * 데이터 추가
    */
   saveData = () => {
-    console.log("saveData() 호출 !");
-
     let addHtml = "";
 
     let date = document.getElementById("date").value;
@@ -168,7 +164,7 @@
             <input
               type="checkbox"
               class="check_all_list"
-              id="agree1"
+              name="checkRow"
               onclick="checkAllList(event)"
             />
           </td>
@@ -176,6 +172,12 @@
           <td id="tr_${lastId}_content">${map.get('content')}</td>
           <td><button type="button" class="btn btn-danger" onclick="javascript:deleteData(${lastId++});">삭제</button></td>
           <td><button type="button" class="btn btn-primary" onclick="javascript:updateData(${lastId++});">수정</button></td>
+          <td>
+              <input
+                type="checkbox"
+                onclick="checkComplete()"
+              />
+            </td>
         </tr>`
         document.getElementById("table_body").innerHTML += addHtml;
 
@@ -186,12 +188,35 @@
 
   /**
    * 
-   * 데이터 삭제
+   * 단건 삭제
    */
   deleteData = (id) => {
 
     document.getElementById("tr_" + id).remove();
 
+  }
+
+  /**
+   * 
+   * 다중 삭제
+   */
+  deleteSelectedData = () => {
+
+    let cnt = $("input:checkbox[name='checkRow']:checked").length;
+
+    if ($("input:checkbox[name='checkRow']:checked").length == 0) {
+      alert("선택된 항목이 없습니다.");
+      return;
+    }
+
+    //체크된 체크박스를 가져온다.
+    let checkbox = $("input:checkbox[name=checkRow]:checked");
+
+    //체크된 체크박스의 값을 반복해 불러옴.
+    checkbox.each(function(k, v) {
+      let a = v.parentElement.parentElement.parentElement;
+      $(a).remove();
+    });
   }
 
   /**
@@ -204,7 +229,6 @@
     layer_popup($href);
     
   }
-
 
   /**
    * 
@@ -219,8 +243,7 @@
     for(var i = 0; i < cnt ; i++){
       var content = document.getElementById("tr_" + i + "_content").innerHTML;
 
-      // 메서드 만들기
-
+      // TODO 메서드 만들기
       var strArray = content.split(standard);
       var newStr = ""
       for(var i = 0; i < strArray.length; i ++){
@@ -229,7 +252,6 @@
           newStr += standard;
         }
       }
-
 
       console.log("content:" + content);
       if (content == standard) {
@@ -274,3 +296,15 @@ document.getElementById("dim-layer").innerHTML = str;
 console.log("sssssssssssssssssssssssss");
 }
 
+/**
+ * 
+ * 완료여부 체크
+ */
+checkComplete = () => {
+
+  if($("#complete_check").checked) {
+
+  } else {
+
+  }
+}
