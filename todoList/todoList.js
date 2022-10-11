@@ -224,9 +224,14 @@
    * 단건 수정
    */
    updateData = (id) => {
-    showLayer();
+    showLayerPopup();
     var $href = $(this).attr("href");
     layer_popup($href);
+
+    let str = $("#content").value;
+
+    str = str.replace('old', 'new');
+    console.log(str);
     
   }
 
@@ -260,41 +265,45 @@
     }
   }
 
-showLayer = () => {
-  var str = "";
-  str += `<div id="layer2" class="pop-layer">
-  <div class="pop-container">
-    <div class="pop-conts">
-      <!--content //-->
-      <div class="row">
-        <label><b>변환 전</b></label>&nbsp;&nbsp;
-        <input
-          class="text"
-          value=""
-          disabled="true"
-        />
-      </div>
-      <br/>
-      <div class="row">
-        <label><b>변환 후</b></label>&nbsp;&nbsp;
-        <input
-          class="text"
-        />
-      </div>
-      <div class="btn-r">
-        <a href="#" class="btn-layerClose">수정</a>
-      </div>
+  /**
+   * 
+   * 팝업창 열기
+   */
+  showLayerPopup = () => {
+    let str = "";
+    str += `<div id="layer2" class="pop-layer">
+    <div class="pop-container">
+      <div class="pop-conts">
+        <!--content //-->
+        <div class="row">
+          <label><b>변환 전</b></label>&nbsp;&nbsp;
+          <input
+            class="text"
+            value=""
+            disabled="true"
+          />
+        </div>
+        <br/>
+        <div class="row">
+          <label><b>변환 후</b></label>&nbsp;&nbsp;
+          <input
+            class="text"
+          />
+        </div>
+        <div class="btn-r">
+          <a href="#" class="btn-layerClose">수정</a>
+        </div>
 
-      <div class="btn-r">
-        <a href="#" class="btn-layerClose">Close</a>
+        <div class="btn-r">
+          <a href="#" class="btn-layerClose">Close</a>
+        </div>
+        <!--// content-->
       </div>
-      <!--// content-->
     </div>
-  </div>
-</div>`;
-document.getElementById("dim-layer").innerHTML = str;
-console.log("sssssssssssssssssssssssss");
-}
+  </div>`;
+  document.getElementById("dim-layer").innerHTML = str;
+  console.log("sssssssssssssssssssssssss");
+  }
 
 /**
  * 
