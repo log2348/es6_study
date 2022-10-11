@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES6 실습</title>
+</head>
+<body>
+    <input type="button" value="버튼" onclick="carTypesArrows('aaa')">
+    
+</body>
+</html>
+
+<script>
+    function clickButton() {
+        /* let : 코드 블록을 지역 스코프로 지정 */
+        let number = 1;
+    
+        if(true) {
+            let number = 5;
+        }
+    
+        console.log(number); 
+        console.log(name); // Uncaught ReferenceError: Cannot access 'name' before initialization at clickButton
+    
+        const name = "박지현";
+
+        console.log("string text line 1\n"
+        + "string text line 2"); // ES5
+        console.log(`string text line 1
+        string text line 2`); // ES6
+
+        var a = 5;
+        var b = 10;
+
+        console.log(`Fifteen is ${a + b} and not ${2 * a + b}`); // ES6
+    }
+
+    clickButtonArrows = () => {
+        console.log("click button method 호출");
+    }
+
+    var sales = "Toyota";
+    
+    function carTypes(name) {
+
+        console.log("carTypes 함수 실행");
+
+        if (name == "Honda") {
+            return name;
+        } else {
+            console.log("해당 자동차는 판매하지 않습니다.");
+        }
+
+        var car = {
+            myCar : "Saturn",
+            getCar : carTypes("Honda"),
+            special : sales
+        };
+
+        console.log("myCar : " + car.myCar);
+        console.log("getcar : " + car.getCar);
+        console.log("getcar : " + car.special);
+    }
+
+    carTypesArrows = (name) => {
+        console.log("carTypes Arrows Method :" + name);
+    }
+
+    /* Arrows 함수 */
+    arrowMethod = () => {
+        console.log('Arrows 함수 테스트');
+    }
+
+    /* Map */
+    let me = new Map();
+    me.set('name', '박지현');
+    me.set('age', 100);
+    console.log(`이름 : ${me.get('name')}`);
+
+    /* Filter */
+    // var arr = [4, 15, 377, 395, 400, 1024, 3000];
+    // var arr2 = arr.filter(v => (v % 5 === 0));​
+    // console.log(arr2) // [15, 395, 400, 3000]
+
+    /* for/of 반복문 */
+
+    /* Array 반복 */
+    let iterable1 = [10, 20, 30];
+
+    for (let value of iterable1) {
+        console.log("value : " + value);
+    }
+
+    /* Map 반복 */
+    let iterable2 = new Map([["a", 1], ["b", 2]]);
+
+    for (let entry of iterable) {
+        console.log("entry 반복 : " + entry);
+    }
+
+</script>
