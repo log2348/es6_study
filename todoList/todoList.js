@@ -3,6 +3,7 @@
  * Datepicker는 국내와 표기 순서가 다르기 때문에
  * 한국어로 변환하는 과정이 필요하다.
  */
+
 $.datepicker.setDefaults({
   dateFormat: "yy-mm-dd",
   prevText: "이전 달",
@@ -82,35 +83,30 @@ checkAllList = () => {
  */
 addData = () => {
   let addHtml = "";
+  let rowData = {
+    rowId: 0,
+    date: "",
+    content: "",
+  };
 
-  let date = document.getElementById("date").value;
-  let content = document.getElementById("content").value;
+  rowData.date = document.getElementById("date").value;
+  rowData.content = document.getElementById("content").value;
 
-  if (date == "") {
+  if (rowData.date == "") {
     alert("날짜를 선택하세요.");
     return;
   }
 
-  if (content == "") {
+  if (rowData.content == "") {
     alert("내용을 입력하세요.");
     return;
   }
 
-  let map = new Map();
+  // // rowId 세팅
+  let tableCount = document.getElementById("table-body").childElementCount;
+  rowData.rowId = tableCount;
 
-  // rowId 세팅
-  let tableCount = document.getElementById("table-body").childElementCount + 1;
-
-  map.set("rowId", tableCount);
-  map.set("date", date);
-  map.set("content", content);
-
-  // Object 변환 (Dto)
-  let obj = Object.fromEntries(map);
-  console.log(Object.fromEntries(map));
-  console.log("obj: " + obj);
-
-  addHtml = `<tr id="tr-${tableCount}">
+  addHtml = `<tr id="tr-${rowData.rowId}">
             <td>
               <input
                 type="checkbox"
@@ -119,8 +115,8 @@ addData = () => {
                 onclick="checkAllList(event)"
               />
             </td>
-            <td>${map.get("date")}</td>
-            <td id="content-${tableCount}">${map.get("content")}</td>
+            <td>${rowData.date}</td>
+            <td id="content-${rowData.rowId}">${rowData.content}</td>
             <td><input
                 type="checkbox"
                 name="checkComplete"
@@ -130,8 +126,8 @@ addData = () => {
               type="hidden"
               id="row-id"
             />
-            <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${tableCount++});">삭제</span>&nbsp;&nbsp;
-          <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#singleUpdateModal" onclick="setBeforeText(${tableCount})">
+            <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${rowData.rowId});">삭제</span>&nbsp;&nbsp;
+          <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#singleUpdateModal" onclick="setBeforeText(${rowData.rowId})">
     수정
   </span></td>
           </tr>`;
@@ -183,7 +179,7 @@ updateData = () => {
     return;
   }
 
-  document.getElementById("content-" + (tableId - 1)).textContent = afterText;
+  document.getElementById("content-" + tableId).textContent = afterText;
   document.getElementById("before-update-text").value = "";
   document.getElementById("after-update-text").value = "";
 
@@ -194,33 +190,34 @@ updateData = () => {
  * 일괄 수정
  */
 updateDataAll = () => {
-  let data = getAllData();
+  let datas = getAllData();
+  console.log(datas);
   let beforeText = document.getElementById("beforeUpdateTexts").value;
   let afterText = document.getElementById("afterUpdateTexts").value;
-  let newText = document
-    .getElementById("content-1")
-    .value.replace(beforeText, afterText);
+  console.log("시작");
 
-  document.getElementById("content-1").value = newText;
+  for (var data of datas) {
+    var oldStr = "";
+    var newStr = "";
+    oldStr = data.content;
 
-  let id = document.getElementById("row-id").value;
-
-  for (let i = 0; i < data.length; i++) {
-    let checkText = item.children[2].textContent.includes(beforeText);
-    let afterText = document.getElementById("afterUpdateTexts").value;
-
-    // true 반환시 수정
-    if (!checkText) {
-      alert("해당하는 문자열이 존재하지 않습니다.");
-      return;
+    if (oldStr.indexOf(beforeText) != -1) {
+      var arry = oldStr.split(beforeText);
+      for (var i = 0; i < arry.length; i++) {
+        newStr += arry[i];
+        if (i != arry.length - 1) {
+          newStr += afterText;
+        }
+      }
+      data.content = newStr;
     }
-
-    document.getElementById("afterUpdateTexts").value = checkText.replace(
-      beforeText,
-      afterText
-    );
   }
+  console.log("check!!!!!");
+  console.log(datas);
 
+  for (let item of datas) {
+    document.getElementById("content-" + item.rowId).textContent = item.content;
+  }
   document.getElementById("beforeUpdateTexts").value = "";
   document.getElementById("afterUpdateTexts").value = "";
 
@@ -231,31 +228,25 @@ updateDataAll = () => {
  * 데이터 반환
  */
 getAllData = () => {
-  let data = [];
-
-  let table = document.getElementById("table-body").children;
-
+  let datas = [];
   let tableCount = document.getElementById("table-body").childElementCount;
 
   if (tableCount == 0) {
     alert("저장된 항목이 없습니다.");
     return;
   }
-
-  // JSON 데이터 형식 변환
-  for (let item of table) {
-    let map = new Map();
-
-    map.set("rowId", tableCount + 1);
-    map.set("date", item.children[1].textContent);
-    map.set("content", item.children[2].textContent);
-
-    // Object 변환 (Dto)
-    let obj = Object.fromEntries(map);
-
-    data.push(obj);
+  for (var i = 0; i < tableCount; i++) {
+    let rowData = {
+      rowId: 0,
+      date: "",
+      content: "",
+    };
+    rowData.rowId = i;
+    rowData.content = document.getElementById("content-" + i).textContent;
+    datas.push(rowData);
   }
-  return data;
+
+  return datas;
 };
 
 /**
@@ -340,7 +331,7 @@ appendTable = () => {
  * 수정 전 텍스트 세팅
  */
 setBeforeText = (id) => {
-  let text = document.getElementById("content-" + (id - 1)).textContent;
+  let text = document.getElementById("content-" + id).textContent;
   document.getElementById("before-update-text").value = text;
   document.getElementById("table-id").value = id;
 };
