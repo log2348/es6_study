@@ -1,29 +1,29 @@
 [
   {
-    "RowID": 1,
-    "Date": "2022-10-10",
-    "Contents": "1111111",
-    "Complete": true
+    "rowId": 1,
+    "date": "2022-10-10",
+    "cotents": "1111111",
+    "completeState": true
   },
 
   {
-    "RowID": 2,
-    "Date": "2022-10-10",
-    "Contents": "1111111",
-    "Complete": true
+    "rowId": 2,
+    "date": "2022-10-10",
+    "contents": "1111111",
+    "completeState": true
   },
 
   {
-    "RowID": 3,
-    "Date": "2022-10-10",
-    "Contents": "1111111",
-    "Complete": true
+    "rowId": 3,
+    "date": "2022-10-10",
+    "contents": "1111111",
+    "completeState": true
   },
 
   {
-    "RowID": 4,
-    "Date": "2022-10-10",
-    "Contents": "1111111",
-    "Complete": true
+    "rowId": 4,
+    "date": "2022-10-10",
+    "contents": "1111111",
+    "completeState": true
   }
 ]

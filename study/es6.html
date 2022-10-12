@@ -96,9 +96,64 @@
     ["b", 2],
   ]);
 
-  for (let entry of iterable) {
+  for (let entry of iterable2) {
     console.log("entry 반복 : " + entry);
   }
 
   /* forin - key로만 접근 가능 */
+
+  const myPromise = new Promise(function (resolve, reject) {
+    // ajax 흉내내기 위해 setTimeout으로 구현
+    setTimeout(function () {
+      resolve("Promise Success !");
+    }, 3000);
+  });
+
+  myPromise.then(function (value) {
+    console.log(value);
+  });
+
+  let promise = new Promise((resolve, reject) => {
+    // 최초 비동기 처리 코드
+    setTimeout(() => {
+      let num = parseInt(prompt("10 이하의 숫자를 입력하시오."));
+      if (num <= num) {
+        resolve(num);
+      } else {
+        reject(`오류 : 숫자 ${num}은 10을 초과하였습니다.`);
+      }
+    }, 1000);
+  });
+
+  promise.then(
+    (num) => {
+      console.log(`정답 : 숫자 ${num}은 10 이하입니다.`);
+    },
+    (error) => {
+      console.log(`정답 : 숫자 ${num}은 10 이하입니다.`);
+    }
+  );
+
+  const numbers = [5, 12, 8, 130, 44];
+  let output = numbers.find(myFunction);
+  output = numbers.findIndex(myFunction);
+
+  myFunction = (value) => {
+    return value > 10;
+  };
+  console.log(output);
+
+  /* isNan */
+  typeOfNan = (x) => {
+    if (Number.isNaN(x)) {
+      return "Number NaN";
+    }
+  };
+
+  const fruits = ["Banana", "Apple"];
+  const f = fruits.entries();
+
+  for (let x of f) {
+    console.log(x[0], x[1]);
+  }
 </script>
