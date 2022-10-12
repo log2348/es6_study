@@ -69,6 +69,7 @@ checkAllList = () => {
       checkCount++;
     }
   });
+
   if (checkCount > 0) {
     document.getElementById("allCheck").checked = false;
   } else if (checkCount === 0) {
@@ -125,6 +126,10 @@ addData = () => {
                 name="checkComplete"
                 onclick="checkComplete()"
               /></td>
+              <input
+              type="hidden"
+              id="row-id"
+            />
             <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${tableCount++});">삭제</span>&nbsp;&nbsp;
           <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#singleUpdateModal" onclick="setBeforeText(${tableCount})">
     수정
@@ -170,7 +175,7 @@ deleteSelectedData = () => {
  * 단건 수정
  */
 updateData = () => {
-  let afterText = document.getElementById("afterUpdateText").value;
+  let afterText = document.getElementById("after-update-text").value;
   let tableId = document.getElementById("table-id").value;
 
   if (afterText == "") {
@@ -179,8 +184,8 @@ updateData = () => {
   }
 
   document.getElementById("content-" + (tableId - 1)).textContent = afterText;
-  document.getElementById("beforeUpdateText").value = "";
-  document.getElementById("afterUpdateText").value = "";
+  document.getElementById("before-update-text").value = "";
+  document.getElementById("after-update-text").value = "";
 
   document.getElementById("close-update-modal").click();
 };
@@ -197,6 +202,8 @@ updateDataAll = () => {
     .value.replace(beforeText, afterText);
 
   document.getElementById("content-1").value = newText;
+
+  let id = document.getElementById("row-id").value;
 
   for (let i = 0; i < data.length; i++) {
     let checkText = item.children[2].textContent.includes(beforeText);
@@ -267,7 +274,6 @@ showJsonData = () => {
   for (let item of data) {
     arrData.push(item);
   }
-
   alert(JSON.stringify(arrData));
 };
 
@@ -277,7 +283,7 @@ showJsonData = () => {
 getJsonFile = () => {
   let promise = new Promise((resolve, reject) => {
     $.ajax({
-      url: "http://localhost/todo.json",
+      url: "localhost/todo.json",
       type: "get",
       dataType: "json",
     })
@@ -302,10 +308,39 @@ getJsonFile = () => {
 };
 
 /**
+ * 외부 JSON 파일 항목 붙이기
+ */
+appendTable = () => {
+  let addTableBody = `<tr id="tr-${rowId}">
+            <td>
+              <input
+                type="checkbox"
+                name="checkRow"
+                class="check_all_list"
+                onclick="checkAllList(event)"
+              />
+            </td>
+            <td>${date}</td>
+            <td id="content-${rowId}">${content}</td>
+            <td><input
+                type="checkbox"
+                name="checkComplete"
+                onclick="checkComplete()"
+              /></td>
+            <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${rowId});">삭제</span>&nbsp;&nbsp;
+          <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#singleUpdateModal" onclick="setBeforeText(${rowId})">
+    수정
+  </span></td>
+          </tr>`;
+
+  document.getElementById("table-body").innerHTML += addHtml;
+};
+
+/**
  * 수정 전 텍스트 세팅
  */
 setBeforeText = (id) => {
   let text = document.getElementById("content-" + (id - 1)).textContent;
-  document.getElementById("beforeUpdateText").value = text;
+  document.getElementById("before-update-text").value = text;
   document.getElementById("table-id").value = id;
 };
