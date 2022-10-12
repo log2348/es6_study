@@ -115,7 +115,7 @@ addData = () => {
                 onclick="checkAllList(event)"
               />
             </td>
-            <td>${rowData.date}</td>
+            <td id="date-${rowData.rowId}">${rowData.date}</td>
             <td id="content-${rowData.rowId}">${rowData.content}</td>
             <td><input
                 type="checkbox"
@@ -243,6 +243,7 @@ getAllData = () => {
     };
     rowData.rowId = i;
     rowData.content = document.getElementById("content-" + i).textContent;
+    rowData.date = document.getElementById("date-" + i).textContent;
     datas.push(rowData);
   }
 
