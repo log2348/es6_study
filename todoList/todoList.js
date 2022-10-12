@@ -94,26 +94,22 @@ addData = () => {
     alert("내용을 입력하세요.");
     return;
   }
-  // key 값을 담은 배열
-  const arry = ["date", "content"];
+
   let map = new Map();
 
-  arry.forEach((element) =>
-    map.set(element, document.getElementById(element).value)
-  );
-
   // rowId 세팅
-  let tableCount = document.getElementById("table_body").childElementCount + 1;
-  map.set("rowId", tableCount);
+  let tableCount = document.getElementById("table-body").childElementCount + 1;
 
-  map.forEach((value, key) => console.log("key: " + key + " value : " + value));
+  map.set("rowId", tableCount);
+  map.set("date", date);
+  map.set("content", content);
 
   // Object 변환 (Dto)
   let obj = Object.fromEntries(map);
   console.log(Object.fromEntries(map));
   console.log("obj: " + obj);
 
-  addHtml = `<tr id="tr_${tableCount}">
+  addHtml = `<tr id="tr-${tableCount}">
             <td>
               <input
                 type="checkbox"
@@ -123,18 +119,19 @@ addData = () => {
               />
             </td>
             <td>${map.get("date")}</td>
-            <td id="tr_${tableCount}_content">${map.get("content")}</td>
+            <td id="content-${tableCount}">${map.get("content")}</td>
             <td><input
                 type="checkbox"
+                name="checkComplete"
                 onclick="checkComplete()"
               /></td>
-            <td><button type="button" class="btn btn-danger" onclick="javascript:deleteData(${tableCount++});">삭제</button>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#singleUpdateModal">
+            <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${tableCount++});">삭제</span>&nbsp;&nbsp;
+          <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#singleUpdateModal" onclick="setBeforeText(${tableCount})">
     수정
-  </button></td>
+  </span></td>
           </tr>`;
 
-  document.getElementById("table_body").innerHTML += addHtml;
+  document.getElementById("table-body").innerHTML += addHtml;
 
   // 입력폼 초기화
   document.getElementById("date").value = "";
@@ -145,7 +142,7 @@ addData = () => {
  * 단건 삭제
  */
 deleteData = (id) => {
-  document.getElementById("tr_" + id).remove();
+  document.getElementById("tr-" + id).remove();
 };
 
 /**
@@ -167,7 +164,7 @@ deleteSelectedData = () => {
     let a = v.parentElement.parentElement;
     $(a).remove();
 
-    // TODO 전체 선택 체크박스 체크 풀리도록
+    $("input:checkbox[name='allCheck']").prop("checked", false);
   });
 };
 
@@ -178,45 +175,48 @@ updateData = () => {
   let beforeText = document.getElementById("beforeUpdateText").value;
   let afterText = document.getElementById("afterUpdateText").value;
 
+  let tableId = document.getElementById("table-id").value;
+
   if (afterText == "") {
     alert("수정하실 텍스트를 입력하세요.");
     return;
   }
 
-  str = str.replace(beforeText, afterText);
-  console.log(str);
+  document.getElementById("content-" + (tableId - 1)).textContent = afterText;
+  document.getElementById("beforeUpdateText").value = "";
+  document.getElementById("afterUpdateText").value = "";
+
+  document.getElementById("close-update-modal").click();
 };
 
 /**
  * 일괄 수정
  */
 updateDataAll = () => {
+  console.log("일괄 수정 호출 11111111111");
   let beforeText = document.getElementById("beforeUpdateTexts").value;
-  let allData = getAllData();
+  let data = getAllData();
 
-  // TODO for문 돌리기
-  const checkText = allData[0].content.includes(beforeText);
-  console.log("update 다중건" + beforeText);
+  for (let item of data) {
+    let checkText = item.children[2].textContent.includes(beforeText);
+    let afterText = document.getElementById("afterUpdateTexts").value;
 
-  // true 반환시 수정
-  if (!checkText) {
-    alert("해당하는 문자열이 존재하지 않습니다.");
-    return;
+    // true 반환시 수정
+    if (!checkText) {
+      alert("해당하는 문자열이 존재하지 않습니다.");
+      return;
+    }
+
+    document.getElementById("afterUpdateTexts").value = checkText.replace(
+      beforeText,
+      afterText
+    );
   }
 
-  let afterText = document.getElementById("afterUpdateTexts").value;
+  document.getElementById("beforeUpdateTexts").value = "";
+  document.getElementById("afterUpdateTexts").value = "";
 
-  allData[0].content.replace(beforeText, afterText);
-};
-
-/**
- * 완료여부 체크
- */
-checkComplete = () => {
-  if ($("#complete_check").checked) {
-    // TODO 체크되면 completeState 값 true로 변경
-  } else {
-  }
+  document.getElementById("close-modal").click();
 };
 
 /**
@@ -225,9 +225,9 @@ checkComplete = () => {
 getAllData = () => {
   let data = [];
 
-  let table = document.getElementById("table_body");
+  let table = document.getElementById("table-body").children;
 
-  let tableCount = document.getElementById("table_body").childElementCount;
+  let tableCount = document.getElementById("table-body").childElementCount;
 
   if (tableCount == 0) {
     alert("저장된 항목이 없습니다.");
@@ -235,16 +235,11 @@ getAllData = () => {
   }
 
   for (let item of table) {
-    // key 값을 담은 배열
-    const arry = ["date", "content"];
     let map = new Map();
 
-    arry.forEach((element) =>
-      map.set(element, document.getElementById(element).value)
-    );
-
-    map.set("rowId", gewRowId());
-    console.log("rowId 가져와지나요? : " + getRowId());
+    map.set("rowId", tableCount + 1);
+    map.set("date", item.children[1].textContent);
+    map.set("content", item.children[2].textContent);
 
     // Object 변환 (Dto)
     let obj = Object.fromEntries(map);
@@ -252,24 +247,74 @@ getAllData = () => {
     console.log("obj: " + obj);
 
     data.push(obj);
-    console.log("배열 출력 : " + data);
-
-    return data;
+    console.log(data);
   }
+  return data;
 };
 
 /**
  *
  */
 gewRowId = () => {
-  let tableCount = document.getElementById("table_body").childElementCount;
+  let tableCount = document.getElementById("table-body").childElementCount;
   return tableCount + 1;
 };
 
 /**
  * 데이터 JSON 형식으로 반환
  */
-getJsonData = () => {
-  getAllData();
-  alert("11111111111");
+showJsonData = () => {
+  let data = getAllData();
+  let arrData = new Array();
+  let tableCount = data.childElementCount;
+
+  if (tableCount == 0) {
+    alert("저장된 데이터가 없습니다.");
+    return;
+  }
+
+  for (let item of data) {
+    arrData.push(item);
+  }
+
+  alert(JSON.stringify(arrData));
+};
+
+/**
+ * JSON 파일 호출
+ */
+getJsonFile = () => {
+  let promise = new Promise((resolve, reject) => {
+    $.ajax({
+      url: "http://localhost/todo.json",
+      type: "get",
+      dataType: "json",
+    })
+      .done(function (response) {
+        console.log("통신 성공");
+        console.log(response.data);
+      })
+      .fail(function (error) {
+        console.log("통신 실패");
+        console.log(error);
+      });
+  });
+
+  promise.then(
+    (num) => {
+      console.log("promise 1111111111");
+    },
+    (error) => {
+      console.log("111111111111");
+    }
+  );
+};
+
+/**
+ * 수정 전 텍스트 세팅
+ */
+setBeforeText = (id) => {
+  let text = document.getElementById("content-" + (id - 1)).textContent;
+  document.getElementById("beforeUpdateText").value = text;
+  document.getElementById("table-id").value = id;
 };

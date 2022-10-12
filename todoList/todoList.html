@@ -33,7 +33,6 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="style.css" />
     <title>MyTodoList</title>
   </head>
   <body>
@@ -84,11 +83,11 @@
             </th>
             <th>날짜</th>
             <th>내용</th>
-            <th>완료</th>
+            <th>완료 여부</th>
             <th>&nbsp;&nbsp;</th>
           </tr>
         </thead>
-        <tbody id="table_body"></tbody>
+        <tbody id="table-body"></tbody>
       </table>
     </div>
     <div class="container">
@@ -99,23 +98,23 @@
       >
         선택 삭제</button
       >&nbsp;&nbsp;
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#updateModal">
     일괄 수정
   </button>
   <br/><br/>
-      <button class="btn btn-primary" onclick="getAllData()">GET JSON</button>
+      <button class="btn btn-secondary" onclick="showJsonData()">GET JSON</button>&nbsp;&nbsp;
+      <button class="btn btn-secondary" onclick="getJsonFile()">항목 불러오기</button>
     </div>
 
-
   <!-- 일괄 수정 Modal -->
-  <div class="modal" id="myModal">
+  <div class="modal" id="updateModal">
     <div class="modal-dialog">
       <div class="modal-content">
       
         <!-- Modal Header -->
         <div class="modal-header">
-          <h5 class="modal-title">일괄 수정</h5>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h5 class="modal-title"><b>일괄 수정</b></h5>
+          <button type="button" class="close" data-dismiss="modal" id="close-modal">&times;</button>
         </div>
         
         <!-- Modal body -->
@@ -135,7 +134,7 @@
         
         <!-- Modal footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">수정</button>
+          <button type="button" class="btn btn-primary" onclick="updateDataAll()">수정</button>
         </div>
         
       </div>
@@ -149,8 +148,8 @@
       
         <!-- Modal Header -->
         <div class="modal-header">
-          <h5 class="modal-title">단건 수정</h5>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h5 class="modal-title"><b>단건 수정</b></h5>
+          <button type="button" class="close" data-dismiss="modal" id="close-update-modal">&times;</button>
         </div>
         
         <!-- Modal body -->
@@ -160,7 +159,6 @@
               type="text"
               id="beforeUpdateText"
               disabled="true"
-              value="111"
             /> <br />
             <label><b>수정 후</b></label>
           <input
@@ -171,6 +169,7 @@
         
         <!-- Modal footer -->
         <div class="modal-footer">
+          <input id="table-id" type="hidden">
           <button type="button" class="btn btn-primary" onclick="updateData()">수정</button>
         </div>
         
