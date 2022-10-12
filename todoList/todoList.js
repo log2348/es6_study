@@ -275,18 +275,21 @@ showJsonData = () => {
 getJsonFile = () => {
   let promise = new Promise((resolve, reject) => {
     $.ajax({
-      url: "localhost/todo.json",
-      type: "get",
-      dataType: "json",
-    })
-      .done(function (response) {
-        console.log("통신 성공");
-        console.log(response.data);
-      })
-      .fail(function (error) {
-        console.log("통신 실패");
-        console.log(error);
-      });
+      type: "GET",
+      async: "false",
+      url: "http://localhost/todo.json",
+      dataType: "jsonp",
+      data: {},
+      callback: "list",
+      success: function (data) {
+        $(data.addr).each(function (key, val) {
+          alert(val.apt);
+        });
+      },
+      error: function () {
+        alert("Fail");
+      },
+    });
   });
 
   promise.then(
@@ -303,7 +306,7 @@ getJsonFile = () => {
  * 외부 JSON 파일 항목 붙이기
  */
 appendTable = () => {
-  let addTableBody = `<tr id="tr-${rowId}">
+  let addTableBody = `<tr id="tr-${rowData.rowId}">
             <td>
               <input
                 type="checkbox"
@@ -312,15 +315,19 @@ appendTable = () => {
                 onclick="checkAllList(event)"
               />
             </td>
-            <td>${date}</td>
-            <td id="content-${rowId}">${content}</td>
+            <td id="date-${rowData.rowId}">${rowData.date}</td>
+            <td id="content-${rowData.rowId}">${rowData.content}</td>
             <td><input
                 type="checkbox"
                 name="checkComplete"
                 onclick="checkComplete()"
               /></td>
-            <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${rowId});">삭제</span>&nbsp;&nbsp;
-          <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#singleUpdateModal" onclick="setBeforeText(${rowId})">
+              <input
+              type="hidden"
+              id="row-id"
+            />
+            <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${rowData.rowId});">삭제</span>&nbsp;&nbsp;
+          <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#singleUpdateModal" onclick="setBeforeText(${rowData.rowId})">
     수정
   </span></td>
           </tr>`;
