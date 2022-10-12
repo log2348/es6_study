@@ -35,76 +35,94 @@
     />
     <title>MyTodoList</title>
   </head>
+  <style>
+    section {
+      padding: 15px;
+    }
+  </style>
   <body>
-    <div class="container">
-      <h2>My Todo List</h2>
-      <br />
-      <div class="form-group">
-        <div>
-          <label><b>날짜</b></label>
-          <br />
-          <input
-            class="form-control col-sm-4 datepicker"
-            placeholder="날짜를 입력하세요."
-            id="date"
-          />
-        </div>
-        <br />
-        <div>
-          <label><b>내용</b></label>
-          <div class="row">
-            &nbsp;&nbsp;&nbsp;
+    <section>
+      <div class="container">
+        <h2>My Todo List</h2>
+      </div>
+      <br/>
+    </section>
+
+    <section>
+
+      <div class="container">
+        <div class="form-group">
+          <div>
+            <label><b>날짜</b></label>
+            <br />
             <input
-              type="text"
-              class="form-control col-sm-6"
-              id="content"
-              placeholder="내용을 입력하세요."
-            />&nbsp;&nbsp;
-            <button type="button" class="btn btn-primary" onclick="addData()">
-              추가
-            </button>
+              class="form-control col-sm-4 datepicker"
+              placeholder="날짜를 입력하세요."
+              id="date"
+            />
+          </div>
+          <br />
+          <div>
+            <label><b>내용</b></label>
+            <div class="row">
+              &nbsp;&nbsp;&nbsp;
+              <input
+                type="text"
+                class="form-control col-sm-4"
+                id="content"
+                placeholder="내용을 입력하세요."
+              />&nbsp;&nbsp;
+              <button type="button" class="btn btn-primary" onclick="addData()">
+                추가
+              </button>
+            </div>
           </div>
         </div>
+  
+        <br />
+  
+        <table class="table" style="text-align: center">
+          <thead>
+            <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  id="allCheck"
+                  name="allCheck"
+                  class="check_all_list"
+                  onclick="allCheck(event)"
+                />
+              </th>
+              <th>날짜</th>
+              <th>내용</th>
+              <th>완료 여부</th>
+              <th>&nbsp;&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
       </div>
 
-      <br />
+    </section>
 
-      <table class="table" style="text-align: center">
-        <thead>
-          <tr>
-            <th>
-              <input
-                type="checkbox"
-                id="allCheck"
-                name="allCheck"
-                class="check_all_list"
-                onclick="allCheck(event)"
-              />
-            </th>
-            <th>날짜</th>
-            <th>내용</th>
-            <th>완료 여부</th>
-            <th>&nbsp;&nbsp;</th>
-          </tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-      </table>
-    </div>
-    <div class="container">
-      <button
-        type="button"
-        class="btn btn-danger"
-        onclick="deleteSelectedData()"
-      >
-        선택 삭제</button
-      >&nbsp;&nbsp;
-      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#updateModal">
-    일괄 수정
-  </button>
-  <br/><br/>
-      <button class="btn btn-secondary" onclick="showJsonData()">GET JSON</button>&nbsp;&nbsp;
-      <button class="btn btn-secondary" onclick="getJsonFile()">항목 불러오기</button>
-    </div>
+    <section>
+      <div class="container">
+        <button
+          type="button"
+          class="btn btn-danger"
+          onclick="deleteSelectedData()"
+        >
+          선택 삭제</button
+        >&nbsp;&nbsp;
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#updateModal">
+      일괄 수정
+    </button>
+    <br/><br/>
+        <button class="btn btn-secondary" onclick="showJsonData()">항목 JSON 반환</button>&nbsp;&nbsp;
+        <button class="btn btn-secondary" onclick="getJsonFile()">항목 불러오기</button>&nbsp;&nbsp;
+        <button class="btn btn-secondary" onclick="window.location.reload();">초기화</button>
+      </div>
+    </section>
 
   <!-- 일괄 수정 Modal -->
   <div class="modal" id="updateModal">

@@ -149,8 +149,6 @@ deleteData = (id) => {
  * 다중 삭제
  */
 deleteSelectedData = () => {
-  let cnt = $("input:checkbox[name='checkRow']:checked").length;
-
   if ($("input:checkbox[name='checkRow']:checked").length == 0) {
     alert("선택된 항목이 없습니다.");
     return;
@@ -172,9 +170,7 @@ deleteSelectedData = () => {
  * 단건 수정
  */
 updateData = () => {
-  let beforeText = document.getElementById("beforeUpdateText").value;
   let afterText = document.getElementById("afterUpdateText").value;
-
   let tableId = document.getElementById("table-id").value;
 
   if (afterText == "") {
@@ -193,11 +189,16 @@ updateData = () => {
  * 일괄 수정
  */
 updateDataAll = () => {
-  console.log("일괄 수정 호출 11111111111");
-  let beforeText = document.getElementById("beforeUpdateTexts").value;
   let data = getAllData();
+  let beforeText = document.getElementById("beforeUpdateTexts").value;
+  let afterText = document.getElementById("afterUpdateTexts").value;
+  let newText = document
+    .getElementById("content-1")
+    .value.replace(beforeText, afterText);
 
-  for (let item of data) {
+  document.getElementById("content-1").value = newText;
+
+  for (let i = 0; i < data.length; i++) {
     let checkText = item.children[2].textContent.includes(beforeText);
     let afterText = document.getElementById("afterUpdateTexts").value;
 
@@ -234,6 +235,7 @@ getAllData = () => {
     return;
   }
 
+  // JSON 데이터 형식 변환
   for (let item of table) {
     let map = new Map();
 
@@ -243,21 +245,10 @@ getAllData = () => {
 
     // Object 변환 (Dto)
     let obj = Object.fromEntries(map);
-    console.log(Object.fromEntries(map));
-    console.log("obj: " + obj);
 
     data.push(obj);
-    console.log(data);
   }
   return data;
-};
-
-/**
- *
- */
-gewRowId = () => {
-  let tableCount = document.getElementById("table-body").childElementCount;
-  return tableCount + 1;
 };
 
 /**
