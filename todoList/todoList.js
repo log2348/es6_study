@@ -102,7 +102,7 @@ addData = () => {
     return;
   }
 
-  // // rowId 세팅
+  // rowId 세팅
   let tableCount = document.getElementById("table-body").childElementCount;
   rowData.rowId = tableCount;
 
@@ -180,6 +180,8 @@ updateData = () => {
   }
 
   document.getElementById("content-" + tableId).textContent = afterText;
+
+  // 입력폼 초기화
   document.getElementById("before-update-text").value = "";
   document.getElementById("after-update-text").value = "";
 
@@ -190,36 +192,32 @@ updateData = () => {
  * 일괄 수정
  */
 updateDataAll = () => {
-  let datas = getAllData();
-  console.log(datas);
-  let beforeText = document.getElementById("beforeUpdateTexts").value;
-  let afterText = document.getElementById("afterUpdateTexts").value;
-  console.log("시작");
+  let data = getAllData();
+  let beforeText = document.getElementById("before-update-texts").value;
+  let afterText = document.getElementById("after-update-texts").value;
 
-  for (var data of datas) {
-    var oldStr = "";
-    var newStr = "";
-    oldStr = data.content;
+  for (var item of data) {
+    let oldStr = "";
+    let newStr = "";
+    oldStr = item.content;
 
     if (oldStr.indexOf(beforeText) != -1) {
-      var arry = oldStr.split(beforeText);
-      for (var i = 0; i < arry.length; i++) {
+      let arry = oldStr.split(beforeText);
+      for (let i = 0; i < arry.length; i++) {
         newStr += arry[i];
         if (i != arry.length - 1) {
           newStr += afterText;
         }
       }
-      data.content = newStr;
+      item.content = newStr;
     }
   }
-  console.log("check!!!!!");
-  console.log(datas);
 
-  for (let item of datas) {
+  for (let item of data) {
     document.getElementById("content-" + item.rowId).textContent = item.content;
   }
-  document.getElementById("beforeUpdateTexts").value = "";
-  document.getElementById("afterUpdateTexts").value = "";
+  document.getElementById("before-update-texts").value = "";
+  document.getElementById("after-update-texts").value = "";
 
   document.getElementById("close-modal").click();
 };
@@ -228,14 +226,14 @@ updateDataAll = () => {
  * 데이터 반환
  */
 getAllData = () => {
-  let datas = [];
+  let data = [];
   let tableCount = document.getElementById("table-body").childElementCount;
 
   if (tableCount == 0) {
     alert("저장된 항목이 없습니다.");
     return;
   }
-  for (var i = 0; i < tableCount; i++) {
+  for (let i = 0; i < tableCount; i++) {
     let rowData = {
       rowId: 0,
       date: "",
@@ -244,10 +242,10 @@ getAllData = () => {
     rowData.rowId = i;
     rowData.content = document.getElementById("content-" + i).textContent;
     rowData.date = document.getElementById("date-" + i).textContent;
-    datas.push(rowData);
+    data.push(rowData);
   }
 
-  return datas;
+  return data;
 };
 
 /**
@@ -282,7 +280,7 @@ getJsonFile = () => {
       data: {},
       callback: "list",
       success: function (data) {
-        $(data.addr).each(function (key, val) {
+        $(data.addr).each(function (val) {
           alert(val.apt);
         });
       },
@@ -291,15 +289,6 @@ getJsonFile = () => {
       },
     });
   });
-
-  promise.then(
-    (num) => {
-      console.log("promise 1111111111");
-    },
-    (error) => {
-      console.log("111111111111");
-    }
-  );
 };
 
 /**
