@@ -124,8 +124,8 @@ deleteSelectedData = () => {
 
   //체크된 체크박스의 값을 반복해 불러온다.
   checkbox.each(function (k, v) {
-    let a = v.parentElement.parentElement;
-    $(a).remove();
+    let item = v.parentElement.parentElement;
+    $(item).remove();
 
     $("input:checkbox[name='allCheck']").prop("checked", false);
   });
@@ -162,9 +162,9 @@ updateDataAll = () => {
   let afterText = document.getElementById("after-update-texts").value;
 
   for (let item of data) {
-    let oldStr = "";
+    let oldStr = item.content;
     let newStr = "";
-    oldStr = item.content;
+    // oldStr = item.content;
 
     if (oldStr.indexOf(beforeText) != -1) {
       let arry = oldStr.split(beforeText);
@@ -202,14 +202,19 @@ getAllData = () => {
     return;
   }
   for (let i = 0; i < tableCount; i++) {
+    let id = document
+      .getElementById("table-body")
+      .getElementsByTagName("tr")
+      [i].getAttribute("rowId");
+    console.log("id : " + id);
+
     let rowData = {
-      rowId: 0,
-      date: "",
-      content: "",
+      rowId: id,
+      date: document.getElementById("date-" + id).textContent,
+      content: document.getElementById("content-" + id).textContent,
+      completeState: false,
     };
-    rowData.rowId = i;
-    rowData.content = document.getElementById("content-" + i).textContent;
-    rowData.date = document.getElementById("date-" + i).textContent;
+
     data.push(rowData);
   }
 
@@ -245,7 +250,7 @@ getJsonFile = () => {
       type: "GET",
       dataType: "json",
       success: function (data) {
-        alert("데이터를 받아옵니다.");
+        alert("Json 파일 받아오기");
         resolve(data);
       },
       error: function (error) {
@@ -256,24 +261,26 @@ getJsonFile = () => {
   });
 };
 
-getJsonFile()
-  .then((data) => {
-    // rowId 세팅
-    let tableCount = document.getElementById("table-body").childElementCount;
+promiseThen = () => {
+  getJsonFile()
+    .then((data) => {
+      // rowId 세팅
+      let tableCount = document.getElementById("table-body").childElementCount;
 
-    for (let item of data) {
-      let rowData = {
-        rowId: tableCount++,
-        date: item.date,
-        content: item.content,
-        completeState: item.completeState,
-      };
-      appendRow(rowData);
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+      for (let item of data) {
+        let rowData = {
+          rowId: tableCount++,
+          date: item.date,
+          content: item.content,
+          completeState: item.completeState,
+        };
+        appendRow(rowData);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 /**
  * 수정 전 텍스트 화면에 세팅
@@ -288,7 +295,7 @@ setBeforeText = (id) => {
  * 테이블 행 추가
  */
 appendRow = (rowData) => {
-  let addHtml = `<tr id="tr-${rowData.rowId}">
+  let addHtml = `<tr id="tr-${rowData.rowId}" rowId="${rowData.rowId}">
             <td>
               <input
                 type="checkbox"
