@@ -110,13 +110,13 @@ addData = () => {
 deleteData = (id) => {
   let oldData = getAllData();
   let newData = [];
-  var j = 0;
+  let index = 0;
 
   oldData.forEach((item) => {
     if (id != item.rowId) {
-      item.rowId = j;
+      item.rowId = index;
       newData.push(item);
-      j++;
+      index++;
     }
   });
   document.getElementById("table-body").innerHTML = "";
