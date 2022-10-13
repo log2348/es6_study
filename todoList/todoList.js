@@ -350,7 +350,7 @@ appendRow = (rowData) => {
                 id="complete-${rowData.rowId}"
               ${
                 rowData.completeState == true ? "checked" : ""
-              } onclick="chkComplete(${rowData.rowId})" /></td>
+              } onclick="checkComplete(${rowData.rowId})" /></td>
             <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${
               rowData.rowId
             });">삭제</span>&nbsp;&nbsp;
@@ -409,6 +409,6 @@ initData = () => {
   }
 };
 
-chkComplete = (id) => {
+checkComplete = (id) => {
   document.getElementById("complete-" + id).setAttribute("checked", true);
 };
