@@ -80,8 +80,11 @@ checkAllList = () => {
  * 데이터 추가
  */
 addData = () => {
+  let data = getAllData();
+  let rowCount = data[data.length - 1].rowId;
+
   let rowData = {
-    rowId: document.getElementById("table-body").childElementCount,
+    rowId: rowCount + 1,
     date: document.getElementById("date").value,
     content: document.getElementById("content").value,
   };
@@ -126,24 +129,28 @@ deleteSelectedData = () => {
     return;
   }
 
-  let oldData = getAllData();
+  let newData = [];
 
-  //체크된 체크박스를 가져온다.
-  let checkbox = $("input:checkbox[name=checkRow]:checked");
+  // 체크되지 않은 항목
+  let unChecked = $("input:checkbox[name=checkRow]:not(:checked)");
 
-  //체크된 체크박스의 값을 반복해 불러온다.
-  checkbox.each(function (k, v) {
-    let item = v.parentElement.parentElement;
+  unChecked.each(function (k, v) {
+    let index = v.parentElement.parentElement.getAttribute("rowId");
+    let date = document.getElementById("date-" + index).textContent;
+    let content = document.getElementById("content-" + index).textContent;
+    let rowData = {
+      rowId: index,
+      date: date,
+      content: content,
+      completeState: false,
+    };
 
-    let newData = oldData.filter((item) => item.rowId == id);
-    console.log("item");
-    console.log(item);
-    data.splice(item.rowId, 1);
+    newData.push(rowData);
   });
 
   document.getElementById("table-body").innerHTML = "";
 
-  for (let item of oldData) {
+  for (let item of newData) {
     appendRow(item);
   }
 
@@ -373,5 +380,13 @@ initUpdateForm = () => {
 };
 
 initData = () => {
+  // 초기화
+  // JSON 데이터 모두 날리고 화면 다시 그리기
+  let data = [];
+
   document.getElementById("table-body").innerHTML = "";
+
+  for (let item of data) {
+    appendRow(item);
+  }
 };
