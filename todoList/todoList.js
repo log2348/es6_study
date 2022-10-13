@@ -241,7 +241,7 @@ getAllData = () => {
       rowId: id,
       date: document.getElementById("date-" + id).textContent,
       content: document.getElementById("content-" + id).textContent,
-      completeState: $("checkbox-" + id).checked == true ? true : false,
+      completeState: false,
     };
 
     data.push(rowData);
@@ -311,6 +311,8 @@ promiseThen = () => {
 };
 
 setIndexTable = () => {
+  let trTable = document.getElementById("table-body").children;
+
   $("#table-body")
     .find("tr")
     .each(function (i, v) {
@@ -341,8 +343,6 @@ appendRow = (rowData) => {
                 type="checkbox"
                 name="checkComplete"
                 id="checkbox-${rowData.rowId}"
-                onclick="checkComplete(${rowData.rowId})"
-                checked=true
               /></td>
               <input
               type="hidden"
