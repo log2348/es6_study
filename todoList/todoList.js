@@ -136,26 +136,51 @@ deleteSelectedData = () => {
     return;
   }
 
+  let tableCnt = document.getElementById("table-body").childElementCount;
   let newData = [];
-
+  let j = 0;
   // 체크되지 않은 항목
-  let unChecked = $("input:checkbox[name=checkRow]:not(:checked)");
+  
+  for(let i = 0; i < tableCnt; i++){
+    if(document.getElementById("checkbox-" + i).checked != true){
+      let rowData = {
+        rowId: j,
+        date: document.getElementById("date-" + i).textContent,
+        content: document.getElementById("content-" + i).textContent,
+        completeState: document.getElementById("complete-" + i).checked
+      };
+      newData.push(rowData);
+      j++;
+    }
+    
+  }
 
-  unChecked.each(function (k, v) {
-    var i = 0;
-    let index = i++;
-    let date = document.getElementById("date-" + index).textContent;
-    let content = document.getElementById("content-" + index).textContent;
-    let chk = document.getElementById("checkbox-" + index).checked;
-    let rowData = {
-      rowId: index,
-      date: date,
-      content: content,
-      completeState: chk
-    };
+  // for (let i = 0; i < unChecked.length; i++) {
+  //   let rowData = {
+  //     rowId: i,
+  //     date: unChecked[i].date,
+  //     content: unChecked[i].content,
+  //     completeState: unChecked[i].completeState
+  //   };
+  //   newData.push(rowData);
+  // }
 
-    newData.push(rowData);
-  });
+  // unChecked.each(function (k, v) {
+  //   let index = i;
+  //   let date = document.getElementById("date-" + index).textContent;
+  //   let content = document.getElementById("content-" + index).textContent;
+  //   let chk = document.getElementById("checkbox-" + index).checked;
+  //   let rowData = {
+  //     rowId: index,
+  //     date: date,
+  //     content: content,
+  //     completeState: chk
+  //   };
+
+  //   i++;
+
+  //   newData.push(rowData);
+  // });
 
   document.getElementById("table-body").innerHTML = "";
 
@@ -346,8 +371,8 @@ appendRow = (rowData) => {
                 onclick="checkAllList(event)"
               />
             </td>
-            <td id="date-${rowData.rowId}">${rowData.date}</td>
-            <td id="content-${rowData.rowId}">${rowData.content}</td>
+            <td id="date-${rowData.rowId}" name="date">${rowData.date}</td>
+            <td id="content-${rowData.rowId}" name="content">${rowData.content}</td>
             <td><input
                 type="checkbox"
                 name="checkComplete"
