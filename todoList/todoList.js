@@ -113,11 +113,11 @@ deleteData = (id) => {
   var j = 0;
 
   oldData.forEach((item) => {
-    if(id != item.rowId) {
+    if (id != item.rowId) {
       item.rowId = j;
       newData.push(item);
       j++;
-    };
+    }
   });
   document.getElementById("table-body").innerHTML = "";
 
@@ -139,48 +139,19 @@ deleteSelectedData = () => {
   let tableCnt = document.getElementById("table-body").childElementCount;
   let newData = [];
   let j = 0;
-  // 체크되지 않은 항목
-  
-  for(let i = 0; i < tableCnt; i++){
-    if(document.getElementById("checkbox-" + i).checked != true){
+
+  for (let i = 0; i < tableCnt; i++) {
+    if (document.getElementById("checkbox-" + i).checked != true) {
       let rowData = {
         rowId: j,
         date: document.getElementById("date-" + i).textContent,
         content: document.getElementById("content-" + i).textContent,
-        completeState: document.getElementById("complete-" + i).checked
+        completeState: document.getElementById("complete-" + i).checked,
       };
       newData.push(rowData);
       j++;
     }
-    
   }
-
-  // for (let i = 0; i < unChecked.length; i++) {
-  //   let rowData = {
-  //     rowId: i,
-  //     date: unChecked[i].date,
-  //     content: unChecked[i].content,
-  //     completeState: unChecked[i].completeState
-  //   };
-  //   newData.push(rowData);
-  // }
-
-  // unChecked.each(function (k, v) {
-  //   let index = i;
-  //   let date = document.getElementById("date-" + index).textContent;
-  //   let content = document.getElementById("content-" + index).textContent;
-  //   let chk = document.getElementById("checkbox-" + index).checked;
-  //   let rowData = {
-  //     rowId: index,
-  //     date: date,
-  //     content: content,
-  //     completeState: chk
-  //   };
-
-  //   i++;
-
-  //   newData.push(rowData);
-  // });
 
   document.getElementById("table-body").innerHTML = "";
 
@@ -276,9 +247,8 @@ getAllData = () => {
       rowId: id,
       date: document.getElementById("date-" + id).textContent,
       content: document.getElementById("content-" + id).textContent,
-      completeState: document.getElementById("complete-" + id).checked
+      completeState: document.getElementById("complete-" + id).checked,
     };
-
 
     data.push(rowData);
   }
@@ -354,7 +324,6 @@ setIndexTable = () => {
       v.children[1].setAttribute("id", "date-" + i);
       v.children[2].setAttribute("id", "content-" + i);
     });
-
 };
 
 /**
@@ -372,14 +341,22 @@ appendRow = (rowData) => {
               />
             </td>
             <td id="date-${rowData.rowId}" name="date">${rowData.date}</td>
-            <td id="content-${rowData.rowId}" name="content">${rowData.content}</td>
+            <td id="content-${rowData.rowId}" name="content">${
+    rowData.content
+  }</td>
             <td><input
                 type="checkbox"
                 name="checkComplete"
                 id="complete-${rowData.rowId}"
-              ${rowData.completeState == true ? "checked" : ""} onclick="chkComplete(${rowData.rowId})" /></td>
-            <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${rowData.rowId});">삭제</span>&nbsp;&nbsp;
-          <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#update-modal" onclick="clickUpdateBtn(${rowData.rowId})">
+              ${
+                rowData.completeState == true ? "checked" : ""
+              } onclick="chkComplete(${rowData.rowId})" /></td>
+            <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${
+              rowData.rowId
+            });">삭제</span>&nbsp;&nbsp;
+          <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#update-modal" onclick="clickUpdateBtn(${
+            rowData.rowId
+          })">
     수정
   </span></td>
           </tr>`;
@@ -399,8 +376,6 @@ clickUpdateBtn = (id) => {
   document.getElementById("before-update-text").value = text;
   document.getElementById("before-update-text").disabled = true;
   document.getElementById("table-id").value = id;
-
-
 };
 
 /**
@@ -436,4 +411,4 @@ initData = () => {
 
 chkComplete = (id) => {
   document.getElementById("complete-" + id).setAttribute("checked", true);
-}
+};
