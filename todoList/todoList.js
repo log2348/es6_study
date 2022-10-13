@@ -138,18 +138,18 @@ deleteSelectedData = () => {
 
   let tableCnt = document.getElementById("table-body").childElementCount;
   let newData = [];
-  let j = 0;
+  let index = 0;
 
   for (let i = 0; i < tableCnt; i++) {
     if (document.getElementById("checkbox-" + i).checked != true) {
       let rowData = {
-        rowId: j,
+        rowId: index,
         date: document.getElementById("date-" + i).textContent,
         content: document.getElementById("content-" + i).textContent,
         completeState: document.getElementById("complete-" + i).checked,
       };
       newData.push(rowData);
-      j++;
+      index++;
     }
   }
 
