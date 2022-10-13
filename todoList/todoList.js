@@ -1,9 +1,7 @@
 /**
- *
  * Datepicker는 국내와 표기 순서가 다르기 때문에
  * 한국어로 변환하는 과정이 필요하다.
  */
-
 $.datepicker.setDefaults({
   dateFormat: "yy-mm-dd",
   prevText: "이전 달",
@@ -185,6 +183,7 @@ updateData = () => {
   document.getElementById("before-update-text").value = "";
   document.getElementById("after-update-text").value = "";
 
+  // 모달창 닫기
   document.getElementById("close-update-modal").click();
 };
 
@@ -196,7 +195,7 @@ updateDataAll = () => {
   let beforeText = document.getElementById("before-update-texts").value;
   let afterText = document.getElementById("after-update-texts").value;
 
-  for (var item of data) {
+  for (let item of data) {
     let oldStr = "";
     let newStr = "";
     oldStr = item.content;
@@ -216,9 +215,12 @@ updateDataAll = () => {
   for (let item of data) {
     document.getElementById("content-" + item.rowId).textContent = item.content;
   }
+
+  // 입력폼 초기화
   document.getElementById("before-update-texts").value = "";
   document.getElementById("after-update-texts").value = "";
 
+  // 모달창 닫기
   document.getElementById("close-modal").click();
 };
 
@@ -271,31 +273,37 @@ showJsonData = () => {
  * JSON 파일 호출
  */
 getJsonFile = () => {
-  let promise = new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     $.ajax({
+      url: "/todo.json",
       type: "GET",
-      async: "false",
-      url: "http://localhost/todo.json",
-      dataType: "jsonp",
-      data: {},
-      callback: "list",
+      dataType: "json",
       success: function (data) {
-        $(data.addr).each(function (val) {
-          alert(val.apt);
-        });
+        alert("데이터를 받아옵니다.");
+        resolve(data);
       },
-      error: function () {
+      error: function (error) {
         alert("Fail");
+        reject(error);
       },
     });
   });
 };
 
-/**
- * 외부 JSON 파일 항목 붙이기
- */
-appendTable = () => {
-  let addTableBody = `<tr id="tr-${rowData.rowId}">
+getJsonFile()
+  .then((data) => {
+    // rowId 세팅
+    let tableCount = document.getElementById("table-body").childElementCount;
+
+    for (let item of data) {
+      let rowData = {
+        rowId: tableCount++,
+        date: item.date,
+        content: item.content,
+        completeState: item.completeState,
+      };
+
+      addHtml = `<tr id="tr-${rowData.rowId}">
             <td>
               <input
                 type="checkbox"
@@ -321,8 +329,12 @@ appendTable = () => {
   </span></td>
           </tr>`;
 
-  document.getElementById("table-body").innerHTML += addHtml;
-};
+      document.getElementById("table-body").innerHTML += addHtml;
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 
 /**
  * 수정 전 텍스트 세팅
