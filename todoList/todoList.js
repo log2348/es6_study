@@ -80,11 +80,8 @@ checkAllList = () => {
  * 데이터 추가
  */
 addData = () => {
-  let data = getAllData();
-  let rowCount = data[data.length - 1].rowId;
-
   let rowData = {
-    rowId: rowCount + 1,
+    rowId: 0,
     date: document.getElementById("date").value,
     content: document.getElementById("content").value,
   };
@@ -100,6 +97,7 @@ addData = () => {
   }
 
   appendRow(rowData);
+  setIndexTable();
 
   // 입력폼 초기화
   document.getElementById("date").value = "";
@@ -118,6 +116,7 @@ deleteData = (id) => {
   for (let item of newData) {
     appendRow(item);
   }
+  setIndexTable();
 };
 
 /**
@@ -154,6 +153,7 @@ deleteSelectedData = () => {
     appendRow(item);
   }
 
+  setIndexTable();
   $("input:checkbox[name='allCheck']").prop("checked", false);
 };
 
@@ -241,7 +241,7 @@ getAllData = () => {
       rowId: id,
       date: document.getElementById("date-" + id).textContent,
       content: document.getElementById("content-" + id).textContent,
-      completeState: false,
+      completeState: $("checkbox-" + id).checked == true ? true : false,
     };
 
     data.push(rowData);
@@ -310,6 +310,17 @@ promiseThen = () => {
     });
 };
 
+setIndexTable = () => {
+  $("#table-body")
+    .find("tr")
+    .each(function (i, v) {
+      v.setAttribute("id", "tr-" + i);
+      v.setAttribute("rowId", i);
+      v.children[1].setAttribute("id", "date-" + i);
+      v.children[2].setAttribute("id", "content-" + i);
+    });
+};
+
 /**
  * 테이블 행 추가
  */
@@ -329,7 +340,9 @@ appendRow = (rowData) => {
             <td><input
                 type="checkbox"
                 name="checkComplete"
-                onclick="checkComplete()"
+                id="checkbox-${rowData.rowId}"
+                onclick="checkComplete(${rowData.rowId})"
+                checked=true
               /></td>
               <input
               type="hidden"
