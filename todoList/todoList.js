@@ -80,15 +80,11 @@ checkAllList = () => {
  * 데이터 추가
  */
 addData = () => {
-  let addHtml = "";
   let rowData = {
-    rowId: 0,
-    date: "",
-    content: "",
+    rowId: document.getElementById("table-body").childElementCount,
+    date: document.getElementById("date").value,
+    content: document.getElementById("content").value,
   };
-
-  rowData.date = document.getElementById("date").value;
-  rowData.content = document.getElementById("content").value;
 
   if (rowData.date == "") {
     alert("날짜를 선택하세요.");
@@ -100,37 +96,7 @@ addData = () => {
     return;
   }
 
-  // rowId 세팅
-  let tableCount = document.getElementById("table-body").childElementCount;
-  rowData.rowId = tableCount;
-
-  addHtml = `<tr id="tr-${rowData.rowId}">
-            <td>
-              <input
-                type="checkbox"
-                name="checkRow"
-                class="check_all_list"
-                onclick="checkAllList(event)"
-              />
-            </td>
-            <td id="date-${rowData.rowId}">${rowData.date}</td>
-            <td id="content-${rowData.rowId}">${rowData.content}</td>
-            <td><input
-                type="checkbox"
-                name="checkComplete"
-                onclick="checkComplete()"
-              /></td>
-              <input
-              type="hidden"
-              id="row-id"
-            />
-            <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${rowData.rowId});">삭제</span>&nbsp;&nbsp;
-          <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#singleUpdateModal" onclick="setBeforeText(${rowData.rowId})">
-    수정
-  </span></td>
-          </tr>`;
-
-  document.getElementById("table-body").innerHTML += addHtml;
+  appendRow(rowData);
 
   // 입력폼 초기화
   document.getElementById("date").value = "";
@@ -302,8 +268,27 @@ getJsonFile()
         content: item.content,
         completeState: item.completeState,
       };
+      appendRow(rowData);
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 
-      addHtml = `<tr id="tr-${rowData.rowId}">
+/**
+ * 수정 전 텍스트 화면에 세팅
+ */
+setBeforeText = (id) => {
+  let text = document.getElementById("content-" + id).textContent;
+  document.getElementById("before-update-text").value = text;
+  document.getElementById("table-id").value = id;
+};
+
+/**
+ * 테이블 행 추가
+ */
+appendRow = (rowData) => {
+  let addHtml = `<tr id="tr-${rowData.rowId}">
             <td>
               <input
                 type="checkbox"
@@ -329,18 +314,5 @@ getJsonFile()
   </span></td>
           </tr>`;
 
-      document.getElementById("table-body").innerHTML += addHtml;
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-
-/**
- * 수정 전 텍스트 세팅
- */
-setBeforeText = (id) => {
-  let text = document.getElementById("content-" + id).textContent;
-  document.getElementById("before-update-text").value = text;
-  document.getElementById("table-id").value = id;
+  document.getElementById("table-body").innerHTML += addHtml;
 };
