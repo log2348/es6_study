@@ -81,7 +81,7 @@ checkAllList = () => {
  */
 addData = () => {
   let rowData = {
-    rowId: 0,
+    rowId: document.getElementById("table-body").childElementCount,
     date: document.getElementById("date").value,
     content: document.getElementById("content").value,
   };
@@ -109,8 +109,16 @@ addData = () => {
  */
 deleteData = (id) => {
   let oldData = getAllData();
-  let newData = oldData.filter((item) => item.rowId != id);
+  let newData = [];
+  var j = 0;
 
+  oldData.forEach((item) => {
+    if(id != item.rowId) {
+      item.rowId = j;
+      newData.push(item);
+      j++;
+    };
+  });
   document.getElementById("table-body").innerHTML = "";
 
   for (let item of newData) {
@@ -134,14 +142,16 @@ deleteSelectedData = () => {
   let unChecked = $("input:checkbox[name=checkRow]:not(:checked)");
 
   unChecked.each(function (k, v) {
-    let index = v.parentElement.parentElement.getAttribute("rowId");
+    var i = 0;
+    let index = i++;
     let date = document.getElementById("date-" + index).textContent;
     let content = document.getElementById("content-" + index).textContent;
+    let chk = document.getElementById("checkbox-" + index).checked;
     let rowData = {
       rowId: index,
       date: date,
       content: content,
-      completeState: false,
+      completeState: chk
     };
 
     newData.push(rowData);
@@ -161,15 +171,15 @@ deleteSelectedData = () => {
  * 단건 수정
  */
 updateData = () => {
+  let id = document.getElementById("table-id").value;
   let afterText = document.getElementById("after-update-text").value;
-  let tableId = document.getElementById("table-id").value;
 
   if (afterText == "") {
     alert("수정하실 문자열을 입력하세요.");
     return;
   }
 
-  document.getElementById("content-" + tableId).textContent = afterText;
+  document.getElementById("content-" + id).textContent = afterText;
 
   // 모달창 닫기
   document.getElementById("close-update-modal").click();
@@ -241,12 +251,12 @@ getAllData = () => {
       rowId: id,
       date: document.getElementById("date-" + id).textContent,
       content: document.getElementById("content-" + id).textContent,
-      completeState: false,
+      completeState: document.getElementById("complete-" + id).checked
     };
+
 
     data.push(rowData);
   }
-
   return data;
 };
 
@@ -311,8 +321,6 @@ promiseThen = () => {
 };
 
 setIndexTable = () => {
-  let trTable = document.getElementById("table-body").children;
-
   $("#table-body")
     .find("tr")
     .each(function (i, v) {
@@ -321,6 +329,7 @@ setIndexTable = () => {
       v.children[1].setAttribute("id", "date-" + i);
       v.children[2].setAttribute("id", "content-" + i);
     });
+
 };
 
 /**
@@ -342,18 +351,13 @@ appendRow = (rowData) => {
             <td><input
                 type="checkbox"
                 name="checkComplete"
-                id="checkbox-${rowData.rowId}"
-              /></td>
-              <input
-              type="hidden"
-              id="row-id"
-            />
+                id="complete-${rowData.rowId}"
+              ${rowData.completeState == true ? "checked" : ""} onclick="chkComplete(${rowData.rowId})" /></td>
             <td><span style="color: red; cursor:pointer;" onclick="javascript:deleteData(${rowData.rowId});">삭제</span>&nbsp;&nbsp;
           <span style="color: blue; cursor:pointer;" data-toggle="modal" data-target="#update-modal" onclick="clickUpdateBtn(${rowData.rowId})">
     수정
   </span></td>
           </tr>`;
-
   document.getElementById("table-body").innerHTML += addHtml;
 };
 
@@ -368,9 +372,10 @@ clickUpdateBtn = (id) => {
   document.getElementById("update-btn").style.display = "block";
   document.getElementById("update-all-btn").style.display = "none";
   document.getElementById("before-update-text").value = text;
+  document.getElementById("before-update-text").disabled = true;
   document.getElementById("table-id").value = id;
 
-  document.getElementById("before-update-text").disabled = true;
+
 };
 
 /**
@@ -403,3 +408,7 @@ initData = () => {
     appendRow(item);
   }
 };
+
+chkComplete = (id) => {
+  document.getElementById("complete-" + id).setAttribute("checked", true);
+}
