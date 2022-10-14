@@ -51,16 +51,24 @@
 
       <div class="container">
         <div class="form-group">
+          
           <div>
             <label><b>날짜</b></label>
             <br />
-            <input
-              class="form-control col-sm-4 datepicker"
-              placeholder="날짜를 입력하세요."
-              id="date"
-            />
+            <div class="row">
+              &nbsp;&nbsp;&nbsp;
+              <input
+                class="form-control col-sm-4 datepicker"
+                placeholder="날짜를 입력하세요."
+                id="date"
+              />&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="addData()">
+                  검색
+                </button>
+            </div>
           </div>
           <br />
+
           <div>
             <label><b>내용</b></label>
             <div class="row">
@@ -75,6 +83,7 @@
                 추가
               </button>
             </div>
+
           </div>
         </div>
   

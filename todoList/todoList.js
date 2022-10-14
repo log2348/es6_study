@@ -80,23 +80,23 @@ checkAllList = () => {
  * 데이터 추가
  */
 addData = () => {
-  let rowData = {
+  let objTodo = {
     rowId: document.getElementById("table-body").childElementCount,
     date: document.getElementById("date").value,
     content: document.getElementById("content").value,
   };
 
-  if (rowData.date == "") {
+  if (objTodo.date == "") {
     alert("날짜를 선택하세요.");
     return;
   }
 
-  if (rowData.content == "") {
+  if (objTodo.content == "") {
     alert("내용을 입력하세요.");
     return;
   }
 
-  appendRow(rowData);
+  appendRow(objTodo);
   setIndexTable();
 
   // 입력폼 초기화
@@ -108,20 +108,18 @@ addData = () => {
  * 단건 삭제
  */
 deleteData = (id) => {
-  let oldData = getAllData();
-  let newData = [];
-  let index = 0;
+  let arrOldData = getAllData();
+  let arrNewData = [];
 
-  oldData.forEach((item) => {
-    if (id != item.rowId) {
+  arrOldData.forEach((item, index) => {
+    if (item.rowId != id) {
       item.rowId = index;
-      newData.push(item);
-      index++;
+      arrNewData.push(item);
     }
   });
   document.getElementById("table-body").innerHTML = "";
 
-  for (let item of newData) {
+  for (let item of arrNewData) {
     appendRow(item);
   }
   setIndexTable();
@@ -136,26 +134,26 @@ deleteSelectedData = () => {
     return;
   }
 
-  let tableCnt = document.getElementById("table-body").childElementCount;
-  let newData = [];
+  let iRowCount = document.getElementById("table-body").childElementCount;
+  let arrNewData = [];
   let index = 0;
 
-  for (let i = 0; i < tableCnt; i++) {
+  for (let i = 0; i < iRowCount; i++) {
     if (document.getElementById("checkbox-" + i).checked != true) {
-      let rowData = {
+      let objTodo = {
         rowId: index,
         date: document.getElementById("date-" + i).textContent,
         content: document.getElementById("content-" + i).textContent,
         completeState: document.getElementById("complete-" + i).checked,
       };
-      newData.push(rowData);
+      arrNewData.push(objTodo);
       index++;
     }
   }
 
   document.getElementById("table-body").innerHTML = "";
 
-  for (let item of newData) {
+  for (let item of arrNewData) {
     appendRow(item);
   }
 
@@ -167,15 +165,15 @@ deleteSelectedData = () => {
  * 단건 수정
  */
 updateData = () => {
-  let id = document.getElementById("table-id").value;
-  let afterText = document.getElementById("after-update-text").value;
+  let iRowId = document.getElementById("table-id").value;
+  let strNewContent = document.getElementById("after-update-text").value;
 
-  if (afterText == "") {
+  if (strNewContent == "") {
     alert("수정하실 문자열을 입력하세요.");
     return;
   }
 
-  document.getElementById("content-" + id).textContent = afterText;
+  document.getElementById("content-" + iRowId).textContent = strNewContent;
 
   // 모달창 닫기
   document.getElementById("close-update-modal").click();
@@ -185,31 +183,31 @@ updateData = () => {
  * 일괄 수정
  */
 updateDataAll = () => {
-  let data = getAllData();
-  let beforeText = document.getElementById("before-update-text").value;
-  let afterText = document.getElementById("after-update-text").value;
+  let arrTodoList = getAllData();
+  let strBeforeContent = document.getElementById("before-update-text").value;
+  let strAfterContent = document.getElementById("after-update-text").value;
 
   let isUpdated = false;
 
-  if (afterText == "" || beforeText == "") {
+  if (strAfterContent == "" || strBeforeContent == "") {
     alert("텍스트를 입력하세요.");
     return;
   }
 
-  for (let item of data) {
-    let oldStr = item.content;
-    let newStr = "";
+  for (let item of arrTodoList) {
+    let strOldContent = item.content;
+    let strNewContent = "";
 
-    if (oldStr.indexOf(beforeText) != -1) {
-      let arry = oldStr.split(beforeText);
+    if (strOldContent.indexOf(strBeforeContent) != -1) {
+      let arry = strOldContent.split(strBeforeContent);
       for (let i = 0; i < arry.length; i++) {
-        newStr += arry[i];
+        strNewContent += arry[i];
         if (i != arry.length - 1) {
-          newStr += afterText;
+          strNewContent += strAfterContent;
           isUpdated = true;
         }
       }
-      item.content = newStr;
+      item.content = strNewContent;
     }
   }
 
@@ -218,7 +216,7 @@ updateDataAll = () => {
     return;
   }
 
-  for (let item of data) {
+  for (let item of arrTodoList) {
     document.getElementById("content-" + item.rowId).textContent = item.content;
   }
 
@@ -259,19 +257,15 @@ getAllData = () => {
  * 데이터 JSON 형식으로 반환
  */
 showJsonData = () => {
-  let data = getAllData();
-  let arrData = new Array();
-  let tableCount = data.childElementCount;
+  let arrTodoList = getAllData();
+  let iRowCount = arrTodoList.length;
 
-  if (tableCount == 0) {
+  if (iRowCount == 0) {
     alert("저장된 데이터가 없습니다.");
     return;
   }
 
-  for (let item of data) {
-    arrData.push(item);
-  }
-  alert(JSON.stringify(arrData));
+  alert(JSON.stringify(arrTodoList));
 };
 
 /**
@@ -298,11 +292,11 @@ promiseThen = () => {
   getJsonFile()
     .then((data) => {
       // rowId 세팅
-      let tableCount = document.getElementById("table-body").childElementCount;
+      let iRowCount = document.getElementById("table-body").childElementCount;
 
       for (let item of data) {
         let rowData = {
-          rowId: tableCount++,
+          rowId: iRowCount++,
           date: item.date,
           content: item.content,
           completeState: item.completeState,
@@ -316,6 +310,17 @@ promiseThen = () => {
 };
 
 setIndexTable = () => {
+  // debugger;
+  // let arrRow = document.getElementById("table-body").getElementsByTagName("tr");
+
+  // arrRow.forEach((v, i) => {
+  //   v.setAttribute("id", "tr-" + i);
+  //   v.setAttribute("rowId", i);
+  //   v.children[1].setAttribute("id", "date-" + i);
+  //   v.children[2].setAttribute("id", "content-" + i);
+  // });
+
+  // TODO 자바스크립트로 바꾸기
   $("#table-body")
     .find("tr")
     .each(function (i, v) {
@@ -369,11 +374,11 @@ appendRow = (rowData) => {
 clickUpdateBtn = (id) => {
   initUpdateForm();
 
-  let text = document.getElementById("content-" + id).textContent;
+  let strContent = document.getElementById("content-" + id).textContent;
 
   document.getElementById("update-btn").style.display = "block";
   document.getElementById("update-all-btn").style.display = "none";
-  document.getElementById("before-update-text").value = text;
+  document.getElementById("before-update-text").value = strContent;
   document.getElementById("before-update-text").disabled = true;
   document.getElementById("table-id").value = id;
 };
@@ -397,18 +402,18 @@ initUpdateForm = () => {
   document.getElementById("after-update-text").value = "";
 };
 
+/**
+ * 초기화
+ */
 initData = () => {
-  // 초기화
-  // JSON 데이터 모두 날리고 화면 다시 그리기
-  let data = [];
-
   document.getElementById("table-body").innerHTML = "";
-
-  for (let item of data) {
-    appendRow(item);
-  }
 };
 
 checkComplete = (id) => {
   document.getElementById("complete-" + id).setAttribute("checked", true);
 };
+
+// 검색기능 - alert
+// 완료여부 색깔 바뀌게
+// filter, map
+// 변수명 수정
