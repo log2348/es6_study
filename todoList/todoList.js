@@ -39,7 +39,7 @@ $.datepicker.setDefaults({
   dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
   showMonthAfterYear: true,
   yearSuffix: "년",
-  minDate: 0,
+  minDate: 0, // 현재 날짜 이전 날짜 선택 비활성화
 });
 
 $(function () {
@@ -111,10 +111,13 @@ deleteData = (id) => {
   let arrOldData = getAllData();
   let arrNewData = [];
 
-  arrOldData.forEach((item, index) => {
-    if (item.rowId != id) {
+  let index = 0;
+
+  arrOldData.forEach((item) => {
+    if (id != item.rowId) {
       item.rowId = index;
       arrNewData.push(item);
+      index++;
     }
   });
   document.getElementById("table-body").innerHTML = "";
@@ -209,6 +212,9 @@ updateDataAll = () => {
       }
       item.content = strNewContent;
     }
+
+    // replaceAll
+
   }
 
   if (!isUpdated) {
@@ -225,32 +231,32 @@ updateDataAll = () => {
 };
 
 /**
- * 데이터 반환
+ * 화면에 그려진 데이터 반환
  */
 getAllData = () => {
-  let data = [];
-  let tableCount = document.getElementById("table-body").childElementCount;
+  let arrTodoList = [];
+  let iRowCount = document.getElementById("table-body").childElementCount;
 
-  if (tableCount == 0) {
+  if (iRowCount == 0) {
     alert("저장된 항목이 없습니다.");
     return;
   }
-  for (let i = 0; i < tableCount; i++) {
+  for (let i = 0; i < iRowCount; i++) {
     let id = document
       .getElementById("table-body")
       .getElementsByTagName("tr")
       [i].getAttribute("rowId");
 
-    let rowData = {
+    let objTodo = {
       rowId: id,
       date: document.getElementById("date-" + id).textContent,
       content: document.getElementById("content-" + id).textContent,
       completeState: document.getElementById("complete-" + id).checked,
     };
 
-    data.push(rowData);
+    arrTodoList.push(objTodo);
   }
-  return data;
+  return arrTodoList;
 };
 
 /**
@@ -274,7 +280,7 @@ showJsonData = () => {
 getJsonFile = () => {
   return new Promise((resolve, reject) => {
     $.ajax({
-      url: "/todo.json",
+      url: "/es6_study/todoList/todo.json",
       type: "GET",
       dataType: "json",
       success: function (data) {
@@ -309,33 +315,35 @@ promiseThen = () => {
     });
 };
 
+/**
+ * 날짜별 검색 기능
+ */
+selectByDate = () => {
+  let arrTodo = getAllData();
+  let targetDate = document.getElementById("date").value;
+
+  let arrTodoByDate = arrTodo.filter((v) => (v.date == targetDate));
+
+  alert(JSON.stringify(arrTodoByDate));
+}
+
 setIndexTable = () => {
-  // debugger;
-  // let arrRow = document.getElementById("table-body").getElementsByTagName("tr");
+  let arrRow = document.getElementById("table-body").getElementsByTagName("tr");
 
-  // arrRow.forEach((v, i) => {
-  //   v.setAttribute("id", "tr-" + i);
-  //   v.setAttribute("rowId", i);
-  //   v.children[1].setAttribute("id", "date-" + i);
-  //   v.children[2].setAttribute("id", "content-" + i);
-  // });
+  for (let i = 0; i < arrRow.length; i++) {
+    arrRow[i].setAttribute("id", "tr-" + i);
+    arrRow[i].setAttribute("rowId", i);
+    arrRow[i].children[1].setAttribute("id", "date-" + i);
+    arrRow[i].children[2].setAttribute("id", "content-" + i);
+  }
 
-  // TODO 자바스크립트로 바꾸기
-  $("#table-body")
-    .find("tr")
-    .each(function (i, v) {
-      v.setAttribute("id", "tr-" + i);
-      v.setAttribute("rowId", i);
-      v.children[1].setAttribute("id", "date-" + i);
-      v.children[2].setAttribute("id", "content-" + i);
-    });
 };
 
 /**
  * 테이블 행 추가
  */
 appendRow = (rowData) => {
-  let addHtml = `<tr id="tr-${rowData.rowId}" rowId="${rowData.rowId}">
+  let addHtml = `<tr id="tr-${rowData.rowId}" rowId="${rowData.rowId}" style="backgroundColor: ${rowData.completeState === true ? "pink" : ""};">
             <td>
               <input
                 type="checkbox"
@@ -409,11 +417,9 @@ initData = () => {
   document.getElementById("table-body").innerHTML = "";
 };
 
+/**
+ * 완료여부 true/false 세팅
+ */
 checkComplete = (id) => {
   document.getElementById("complete-" + id).setAttribute("checked", true);
 };
-
-// 검색기능 - alert
-// 완료여부 색깔 바뀌게
-// filter, map
-// 변수명 수정
