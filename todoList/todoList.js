@@ -197,33 +197,18 @@ updateDataAll = () => {
     return;
   }
 
-  for (let item of arrTodoList) {
-    let strOldContent = item.content;
-    let strNewContent = "";
+    arrTodoList.forEach((v, i) => {
+      if (v.content.indexOf(strBeforeContent) != -1) {
+        v.content =  v.content.replaceAll(strBeforeContent, strAfterContent);
+        isUpdated = true;
 
-    if (strOldContent.indexOf(strBeforeContent) != -1) {
-      let arry = strOldContent.split(strBeforeContent);
-      for (let i = 0; i < arry.length; i++) {
-        strNewContent += arry[i];
-        if (i != arry.length - 1) {
-          strNewContent += strAfterContent;
-          isUpdated = true;
-        }
+        document.getElementById("content-" + i).textContent = v.content;
       }
-      item.content = strNewContent;
-    }
-
-    // replaceAll
-
-  }
+    });
 
   if (!isUpdated) {
     alert("찾으시는 문자열이 없습니다.");
     return;
-  }
-
-  for (let item of arrTodoList) {
-    document.getElementById("content-" + item.rowId).textContent = item.content;
   }
 
   // 모달창 닫기
