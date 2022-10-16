@@ -216,7 +216,7 @@ updateDataAll = () => {
 };
 
 /**
- * 화면에 그려진 데이터 반환
+ * 화면에 그려진 데이터 배열 형식으로 반환
  */
 getAllData = () => {
   let arrTodoList = [];
