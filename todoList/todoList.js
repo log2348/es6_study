@@ -84,6 +84,7 @@ addData = () => {
     rowId: document.getElementById("table-body").childElementCount,
     date: document.getElementById("date").value,
     content: document.getElementById("content").value,
+    completeState: false,
   };
 
   if (objTodo.date == "") {
@@ -197,14 +198,14 @@ updateDataAll = () => {
     return;
   }
 
-    arrTodoList.forEach((v, i) => {
-      if (v.content.indexOf(strBeforeContent) != -1) {
-        v.content =  v.content.replaceAll(strBeforeContent, strAfterContent);
-        isUpdated = true;
+  arrTodoList.forEach((v, i) => {
+    if (v.content.indexOf(strBeforeContent) != -1) {
+      v.content = v.content.replaceAll(strBeforeContent, strAfterContent);
+      isUpdated = true;
 
-        document.getElementById("content-" + i).textContent = v.content;
-      }
-    });
+      document.getElementById("content-" + i).textContent = v.content;
+    }
+  });
 
   if (!isUpdated) {
     alert("찾으시는 문자열이 없습니다.");
@@ -265,7 +266,7 @@ showJsonData = () => {
 getJsonFile = () => {
   return new Promise((resolve, reject) => {
     $.ajax({
-      url: "/es6_study/todoList/todo.json",
+      url: "/todo.json",
       type: "GET",
       dataType: "json",
       success: function (data) {
@@ -307,10 +308,14 @@ selectByDate = () => {
   let arrTodo = getAllData();
   let targetDate = document.getElementById("date").value;
 
-  let arrTodoByDate = arrTodo.filter((v) => (v.date == targetDate));
+  let arrTodoByDate = arrTodo.filter((v) => v.date == targetDate);
 
+  if (arrTodoByDate.length == 0) {
+    alert("검색 결과가 없습니다.");
+    return;
+  }
   alert(JSON.stringify(arrTodoByDate));
-}
+};
 
 setIndexTable = () => {
   let arrRow = document.getElementById("table-body").getElementsByTagName("tr");
@@ -321,14 +326,15 @@ setIndexTable = () => {
     arrRow[i].children[1].setAttribute("id", "date-" + i);
     arrRow[i].children[2].setAttribute("id", "content-" + i);
   }
-
 };
 
 /**
  * 테이블 행 추가
  */
 appendRow = (rowData) => {
-  let addHtml = `<tr id="tr-${rowData.rowId}" rowId="${rowData.rowId}" style="backgroundColor: ${rowData.completeState === true ? "pink" : ""};">
+  let addHtml = `<tr id="tr-${rowData.rowId}" rowId="${
+    rowData.rowId
+  }" style="background: ${rowData.completeState === true ? "pink" : ""};">
             <td>
               <input
                 type="checkbox"
@@ -403,8 +409,19 @@ initData = () => {
 };
 
 /**
- * 완료여부 true/false 세팅
+ * 완료여부 체크에 따른 행 색상 세팅
  */
 checkComplete = (id) => {
-  document.getElementById("complete-" + id).setAttribute("checked", true);
+  let objTodo = getAllData().find((a) => a.rowId == id);
+  let checkbox = document.getElementById("complete-" + id);
+  let targetRow = document.getElementById("complete-" + id).parentElement
+    .parentElement;
+
+  if (!objTodo.completeState) {
+    targetRow.style.background = "";
+    checkbox.removeAttribute("checked");
+  } else {
+    targetRow.style.background = "pink";
+    checkbox.setAttribute("checked", "");
+  }
 };

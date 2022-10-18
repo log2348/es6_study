@@ -10,14 +10,14 @@
     "rowId": 0,
     "date": "2022-10-11",
     "content": "안녕하세요",
-    "completeState": false
+    "completeState": true
   },
 
   {
     "rowId": 0,
     "date": "2022-10-28",
     "content": "박지현",
-    "completeState": false
+    "completeState": true
   },
 
   {
