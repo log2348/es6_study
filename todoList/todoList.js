@@ -39,7 +39,7 @@ $.datepicker.setDefaults({
   dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
   showMonthAfterYear: true,
   yearSuffix: "년",
-  minDate: 0, // 현재 날짜 이전 날짜 선택 비활성화
+  // minDate: 0, // 현재 날짜 이전 날짜 선택 비활성화
 });
 
 $(function () {
